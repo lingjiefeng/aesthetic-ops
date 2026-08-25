@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>depth card</title>
+<style>
+  :root{
+    --bg: #16151a;
+    --bg-glow: #26232c;
+    --paper: #f2eee4;
+    --paper-edge: #d8d2c2;
+    --ink-dim: #8d8a95;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    background: var(--bg);
+    overflow:hidden;
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    -webkit-user-select:none; user-select:none;
+  }
+
+  /* ---------- stage: spotlight + grain ---------- */
+  .stage{
+    position:fixed; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap: clamp(18px, 3.5vh, 34px);
+    background:
+      radial-gradient(120% 90% at 50% 30%, var(--bg-glow) 0%, var(--bg) 62%);
+    /* pixel magic wand; hotspot on the sparkle at its tip */
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' shape-rendering='crispEdges'%3E%3Crect x='25' y='25' width='4' height='4' fill='%232c1f14'/%3E%3Crect x='22' y='22' width='4' height='4' fill='%234a3628'/%3E%3Crect x='19' y='19' width='4' height='4' fill='%235d442c'/%3E%3Crect x='16' y='16' width='4' height='4' fill='%23755636'/%3E%3Crect x='13' y='13' width='4' height='4' fill='%23cfd6e0'/%3E%3Crect x='6' y='1' width='4' height='4' fill='%23ffd76a'/%3E%3Crect x='6' y='11' width='4' height='4' fill='%23ffd76a'/%3E%3Crect x='1' y='6' width='4' height='4' fill='%23ffd76a'/%3E%3Crect x='11' y='6' width='4' height='4' fill='%23ffd76a'/%3E%3Crect x='6' y='6' width='4' height='4' fill='%23fff3c4'/%3E%3Crect x='18' y='4' width='2' height='2' fill='%23ffd76a'/%3E%3Crect x='3' y='17' width='2' height='2' fill='%23fff3c4'/%3E%3Crect x='24' y='12' width='2' height='2' fill='%23ffd76a'/%3E%3C/svg%3E") 8 8, auto;
+  }
+  .stage::after{ /* film grain */
+    content:""; position:absolute; inset:-50%;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity:.045; pointer-events:none; animation: grain 1.2s steps(4) infinite;
+  }
+  @keyframes grain{
+    0%{ transform:translate(0,0) } 25%{ transform:translate(-2%,1%) }
+    50%{ transform:translate(1%,-2%) } 75%{ transform:translate(-1%,2%) } 100%{ transform:translate(2%,-1%) }
+  }
+
+  /* ---------- 3d scene ---------- */
+  .scene{
+    position:relative;
+    perspective: 1100px;
+  }
+  .shadow{ /* ground shadow, driven by JS, lives outside the rotating space */
+    position:absolute; left:50%; top:50%;
+    width:88%; height:88%;
+    transform:translate(-50%, -46%);
+    background: radial-gradient(50% 50% at 50% 50%, rgba(0,0,0,.55), rgba(0,0,0,0) 70%);
+    filter: blur(18px);
+    z-index:0;
+  }
+  .card3d{
+    position:relative;
+    transform-style: preserve-3d;
+    will-change: transform;
+    z-index:1;
+  }
+
+  /* ---------- the card ---------- */
+  .card{
+    position:relative;
+    overflow:hidden;               /* clips the photo layers; sprites live outside */
+    border-radius: 10px;
+    background: var(--paper);
+    padding: 10px;                  /* photo-print border */
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.5),
+      inset 0 0 0 11px var(--paper),
+      inset 0 0 0 12px var(--paper-edge),
+      0 1px 2px rgba(0,0,0,.5);
+  }
+  .photo-clip{
+    position:relative; overflow:hidden; border-radius:4px;
+    background:#000;
+  }
+  .photo-clip img{ display:block; width:100%; height:auto; }
+  .layer-near{
+    position:absolute; inset:0;
+    transform-origin:50% 50%;
+    will-change:transform;
+  }
+  .glare{
+    position:absolute; inset:0; border-radius:4px;
+    background: linear-gradient(115deg,
+      rgba(255,255,255,0) 32%,
+      rgba(255,246,225,.9) 48%,
+      rgba(255,255,255,0) 64%);
+    background-size: 300% 300%;
+    mix-blend-mode: soft-light;
+    opacity:0; will-change: background-position, opacity;
+    pointer-events:none;
+  }
+
+  /* ---------- sprites: in front, overhanging ---------- */
+  .sprites{
+    position:absolute; inset:0;
+    transform-style: preserve-3d;
+    pointer-events:none;
+  }
+  .sprite{
+    position:absolute;
+    transform: translate(-50%,-50%);
+    image-rendering: pixelated;
+    will-change: transform;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,.45));
+  }
+
+  /* ---------- caption ---------- */
+  .caption{
+    font-family:"SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 11px; letter-spacing:.34em; text-transform:uppercase;
+    color: var(--ink-dim);
+    text-align:center;
+    z-index:2;
+    display:flex; align-items:baseline; gap:1.6em;
+  }
+  .caption b{ color:#c9c5b8; font-weight:600; }
+  .caption .idx{ letter-spacing:.2em; opacity:.7; }
+
+  /* ---------- deck navigation ---------- */
+  .nav{
+    position:absolute; top:50%; transform:translateY(-50%);
+    z-index:3;
+    width:52px; height:52px; border-radius:50%;
+    border:1px solid rgba(230,225,210,.22);
+    background: rgba(242,238,228,.05);
+    color:#c9c5b8;
+    font-size:20px; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    transition: background .25s, border-color .25s, transform .25s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav:hover{
+    background: rgba(242,238,228,.14);
+    border-color: rgba(230,225,210,.5);
+  }
+  .nav:active{ transform:translateY(-50%) scale(.92); }
+  .nav.prev{ left: clamp(10px, 4vw, 56px); }
+  .nav.next{ right: clamp(10px, 4vw, 56px); }
+  .nav svg{ width:20px; height:20px; display:block; }
+  .nav[hidden]{ display:none; }
+
+  @media (prefers-reduced-motion: reduce){
+    .stage::after{ animation:none; }
+  }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <button class="nav prev" id="prev" hidden aria-label="previous card">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg>
+  </button>
+  <div class="scene" id="scene">
+    <div class="shadow" id="shadow"></div>
+    <div class="card3d" id="card3d">
+      <div class="card">
+        <div class="photo-clip" id="clip">
+          <img id="photo" alt="">
+          <img class="layer-near" id="near" alt="" aria-hidden="true" hidden>
+          <div class="glare" id="glare"></div>
+        </div>
+      </div>
+      <div class="sprites" id="sprites"></div>
+    </div>
+  </div>
+  <button class="nav next" id="next" hidden aria-label="next card">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg>
+  </button>
+  <div class="caption"><span id="captionText"></span><span class="idx" id="idx"></span></div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   CONFIG — every knob that governs the feel. Edit and reload.
+   Global feel:
+     tiltMax     max tilt in degrees (10–16 is card-like)
+     followLag   card easing per frame, 0–1 (lower = heavier, laggier)
+     spriteLag   sprite easing toward the card's tilt (lower = trails more)
+     nearDepth   px the near photo layer drifts at full tilt (if a card has one)
+     spriteDrift extra drift multiplier for sprites (how much they outrun the card)
+     glare       glare strength 0–1
+     invert      flip to -1 if the tilt feels backwards on your machine
+   cards[] — one entry per photo:
+     photoSrc, nearSrc (optional), caption, maxWidth,
+     sprites[]: x,y = position in % of the photo area (may exceed 0–100 to
+                overhang), h = height in % of photo height, z = translateZ px
+   Flip between cards with the on-screen arrows or ←/→ keys.
+   ════════════════════════════════════════════════════════════════════ */
+const CONFIG = /*__CONFIG__*/null;
+
+(function(){
+  const capEl = document.getElementById('captionText');
+  if(!CONFIG){ capEl.textContent = 'template — build a card with build_card.py'; return; }
+  const C = Object.assign({
+    tiltMax:13, followLag:.10, spriteLag:.055, nearDepth:22,
+    spriteDrift:1.5, glare:.4, invert:1, cards:[]
+  }, CONFIG);
+
+  const $ = id => document.getElementById(id);
+  const card3d=$('card3d'), shadow=$('shadow'), glare=$('glare'),
+        photoEl=$('photo'), nearImg=$('near'), spritesEl=$('sprites'),
+        clip=$('clip'), idxEl=$('idx'), prevBtn=$('prev'), nextBtn=$('next');
+
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const noHover = matchMedia('(hover: none)').matches;
+
+  /* ---- deck ---- */
+  let cur = 0;
+  let spriteImgs = [];
+  function showCard(i){
+    const c = C.cards[i];
+    photoEl.src = c.photoSrc;
+    if(c.nearSrc){ nearImg.src = c.nearSrc; nearImg.hidden = false; }
+    else{ nearImg.removeAttribute('src'); nearImg.hidden = true; }
+    capEl.innerHTML = c.caption || '';
+    idxEl.textContent = C.cards.length > 1 ? `${i+1} / ${C.cards.length}` : '';
+    clip.style.width = Math.min(c.maxWidth || 470, innerWidth*0.86) + 'px';
+    spritesEl.replaceChildren();
+    for(const s of c.sprites || []){
+      const img = new Image();
+      img.src = s.src; img.className = 'sprite';
+      img.style.left = s.x+'%'; img.style.top = s.y+'%'; img.style.height = s.h+'%';
+      img.dataset.z = s.z;
+      spritesEl.appendChild(img);
+    }
+    spriteImgs = [...spritesEl.children];
+  }
+  if(!C.cards.length){ capEl.textContent = 'no cards in CONFIG'; return; }
+  showCard(0);
+  // decode everything up front so flips are instant
+  for(const c of C.cards){ new Image().src = c.photoSrc; }
+
+  const many = C.cards.length > 1;
+  prevBtn.hidden = nextBtn.hidden = !many;
+
+  /* ---- state: target tilt, card tilt (lags target), sprite tilt (lags card),
+          swing = extra Y rotation used for the card-flip transition ---- */
+  const target={x:0,y:0}, card={x:0,y:0}, spr={x:0,y:0};
+  let swing=0, swingTarget=0, pendingIdx=-1;
+  let pointerActive=false, lastPointer=0, swayPaused=false, t0=performance.now();
+
+  function navigate(dir){
+    if(!many || pendingIdx >= 0) return;
+    pendingIdx = (cur + dir + C.cards.length) % C.cards.length;
+    swingTarget = -dir * 100;          // swing out away from the travel direction
+  }
+  prevBtn.addEventListener('click', e=>{ e.stopPropagation(); navigate(-1); });
+  nextBtn.addEventListener('click', e=>{ e.stopPropagation(); navigate(1); });
+  addEventListener('keydown', e=>{
+    if(e.key==='ArrowLeft') navigate(-1);
+    if(e.key==='ArrowRight') navigate(1);
+  });
+
+  addEventListener('pointermove', e=>{
+    if(e.pointerType!=='mouse') return;
+    const r = card3d.getBoundingClientRect();
+    const nx = Math.max(-1, Math.min(1, (e.clientX-(r.left+r.width/2))/(r.width*.62)));
+    const ny = Math.max(-1, Math.min(1, (e.clientY-(r.top+r.height/2))/(r.height*.62)));
+    target.x = -ny*C.tiltMax*C.invert;
+    target.y =  nx*C.tiltMax*C.invert;
+    pointerActive = true; lastPointer = performance.now();
+  });
+  document.addEventListener('mouseleave', ()=>{ target.x=0; target.y=0; pointerActive=false; });
+  if(noHover){
+    $('stage').addEventListener('pointerdown', e=>{
+      if(e.target.closest('.nav')) return;
+      swayPaused = !swayPaused;
+    });
+  }
+
+  function frame(now){
+    /* idle sway: touch devices always; desktop after 2.4s without a pointer */
+    const idle = noHover ? !swayPaused : (!pointerActive || now-lastPointer>2400);
+    if(idle && !reduced){
+      const t=(now-t0)/1000;
+      target.x = Math.sin(t*.50)*C.tiltMax*.28;
+      target.y = Math.sin(t*.37+1.3)*C.tiltMax*.34;
+      if(!noHover) pointerActive=false;
+    }
+    card.x += (target.x-card.x)*C.followLag;
+    card.y += (target.y-card.y)*C.followLag;
+    spr.x  += (card.x-spr.x)*C.spriteLag;
+    spr.y  += (card.y-spr.y)*C.spriteLag;
+
+    /* card-flip transition: swing out, swap content at the apex, swing back */
+    swing += (swingTarget-swing)*0.16;
+    if(pendingIdx >= 0 && Math.abs(swing-swingTarget) < 12){
+      cur = pendingIdx; pendingIdx = -1;
+      showCard(cur);
+      swing = -swingTarget; swingTarget = 0;   // re-enter from the other side
+    }
+    render();
+    requestAnimationFrame(frame);
+  }
+
+  function render(){
+    const fade = Math.max(0, 1 - Math.abs(swing)/95);
+    card3d.style.transform = `rotateX(${card.x}deg) rotateY(${card.y + swing}deg)`;
+    card3d.style.opacity = fade;
+
+    /* near layer: 2D parallax inside the clip (overflow:hidden flattens 3D) */
+    if(!nearImg.hidden){
+      const px = -card.y/C.tiltMax*C.nearDepth, py = card.x/C.tiltMax*C.nearDepth;
+      nearImg.style.transform = `translate(${px}px, ${py}px) scale(${1+C.nearDepth/260})`;
+    }
+
+    /* sprites: true z-pop + extra lagged drift, scaled by their depth */
+    for(const img of spriteImgs){
+      const z = +img.dataset.z;
+      const dx = -spr.y/C.tiltMax * C.spriteDrift * z*.38;
+      const dy =  spr.x/C.tiltMax * C.spriteDrift * z*.38;
+      img.style.transform = `translate(-50%,-50%) translate3d(${dx}px, ${dy}px, ${z}px)`;
+    }
+
+    /* light sweep + ground shadow */
+    const mag = Math.hypot(card.x, card.y)/C.tiltMax;
+    glare.style.backgroundPosition = `${50 - card.y/C.tiltMax*48}% ${50 - card.x/C.tiltMax*48}%`;
+    glare.style.opacity = reduced ? 0 : Math.min(1, mag*1.25)*C.glare*fade;
+    shadow.style.transform =
+      `translate(calc(-50% + ${card.y*1.1}px), calc(-46% + ${ -card.x*1.1 + mag*6}px)) scale(${1+mag*.05})`;
+    shadow.style.opacity = (.9 - mag*.25)*fade;
+  }
+
+  if(reduced){
+    /* static presentation, but the arrows still flip cards instantly */
+    render();
+    const jump = dir => { cur = (cur+dir+C.cards.length)%C.cards.length; showCard(cur); render(); };
+    prevBtn.onclick = ()=>jump(-1); nextBtn.onclick = ()=>jump(1);
+  } else {
+    requestAnimationFrame(frame);
+  }
+  addEventListener('resize', ()=>{
+    clip.style.width = Math.min(C.cards[cur].maxWidth || 470, innerWidth*0.86)+'px';
+  });
+})();
+</script>
+</body>
+</html>

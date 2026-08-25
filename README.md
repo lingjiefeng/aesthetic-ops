@@ -10,6 +10,12 @@ Like DevOps, but for aesthetics: reusable, battle-tested recipes that turn "make
 - **Prompts** — curated prompts for image/video generation models that reliably hit a distinctive look
 - **Collections** — pointers to interesting open-source visual skills from around the ecosystem
 
+## Skills
+
+| Skill | What it makes |
+|---|---|
+| [`depth-card`](skills/depth-card/) | Photos → an interactive 3D-tilting card page: pixel-art sprites of the photo's own subjects float in front and overhang the edges; multiple photos become an arrow-navigable deck. Single self-contained HTML file. |
+
 ## Structure
 
 ```
