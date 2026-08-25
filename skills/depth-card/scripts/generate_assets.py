@@ -213,14 +213,14 @@ def main():
     if not 1 <= len(args.subject) <= 3:
         fail("give 1-3 --subject values")
 
-    from PIL import Image
+    from PIL import Image, ImageOps
     from google import genai
 
     out_dir = Path(args.out)
     (out_dir / "raw").mkdir(parents=True, exist_ok=True)
 
     photo = Image.open(args.photo)
-    photo = photo.convert("RGB")
+    photo = ImageOps.exif_transpose(photo).convert("RGB")
     if max(photo.size) > BASE_MAX:
         photo.thumbnail((BASE_MAX, BASE_MAX), Image.LANCZOS)
     photo.save(out_dir / "photo.jpg", quality=90)
