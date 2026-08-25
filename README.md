@@ -16,6 +16,24 @@ Like DevOps, but for aesthetics: reusable, battle-tested recipes that turn "make
 |---|---|
 | [`depth-card`](skills/depth-card/) | Photos → an interactive 3D-tilting card page: pixel-art sprites of the photo's own subjects float in front and overhang the edges; multiple photos become an arrow-navigable deck. Single self-contained HTML file. |
 
+## Showcase: depth-card
+
+**[▶ Open the live demo](https://lingjiefeng.github.io/aesthetic-ops/skills/depth-card/examples/field-notes.html)** — hover to tilt, use the arrows (or ←/→) to flip cards.
+
+<!-- demo video: record the deck, then drag the file into this README in the
+     github.com editor — GitHub uploads it and inserts an embedded player. -->
+
+Each card is a real photo; the pixel-art figures are that photo's own
+subjects, redrawn by an image model and floating in front of the card at
+their own depths:
+
+| | | |
+|---|---|---|
+| ![golden hour, with cow](skills/depth-card/examples/card-golden-hour.png) | ![sunflower field](skills/depth-card/examples/card-sunflower.png) | ![lakeside daydream](skills/depth-card/examples/card-daydream.png) |
+
+The whole deck is [one 2MB HTML file](skills/depth-card/examples/field-notes.html)
+— no build, no server, works from a double-click.
+
 ## Structure
 
 ```

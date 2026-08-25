@@ -99,4 +99,6 @@ settle on leave, idle sway on touch/no-hover devices, static under
 ## Privacy
 
 Personal photos and built cards must NOT be committed to this (public)
-repo. Keep them in the user's own directories.
+repo. Keep them in the user's own directories. Exception: `examples/`
+holds a demo deck the repo owner explicitly chose to publish for
+illustration — add nothing there without the same explicit ask.
