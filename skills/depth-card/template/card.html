@@ -203,7 +203,7 @@ const CONFIG = /*__CONFIG__*/null;
   }, CONFIG);
 
   const $ = id => document.getElementById(id);
-  const card3d=$('card3d'), shadow=$('shadow'), glare=$('glare'),
+  const scene=$('scene'), card3d=$('card3d'), shadow=$('shadow'), glare=$('glare'),
         photoEl=$('photo'), nearImg=$('near'), spritesEl=$('sprites'),
         clip=$('clip'), idxEl=$('idx'), prevBtn=$('prev'), nextBtn=$('next');
 
@@ -259,7 +259,9 @@ const CONFIG = /*__CONFIG__*/null;
 
   addEventListener('pointermove', e=>{
     if(e.pointerType!=='mouse') return;
-    const r = card3d.getBoundingClientRect();
+    /* normalize against the un-rotated perspective container — the card's own
+       rect is distorted while tilted or mid-flip and would cause lurches */
+    const r = scene.getBoundingClientRect();
     const nx = Math.max(-1, Math.min(1, (e.clientX-(r.left+r.width/2))/(r.width*.62)));
     const ny = Math.max(-1, Math.min(1, (e.clientY-(r.top+r.height/2))/(r.height*.62)));
     target.x = -ny*C.tiltMax*C.invert;
