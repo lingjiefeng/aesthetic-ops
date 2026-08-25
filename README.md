@@ -20,8 +20,10 @@ Like DevOps, but for aesthetics: reusable, battle-tested recipes that turn "make
 
 **[▶ Open the live demo](https://lingjiefeng.github.io/aesthetic-ops/skills/depth-card/examples/field-notes.html)** — hover to tilt, use the arrows (or ←/→) to flip cards.
 
-<!-- demo video: record the deck, then drag the file into this README in the
-     github.com editor — GitHub uploads it and inserts an embedded player. -->
+<!-- To add a demo video: open this README on github.com, click the pencil
+     (edit), and drag your screen recording (.mp4/.mov, under 100MB) into the
+     editor right here. GitHub uploads it and inserts an embedded player;
+     commit and the video plays inline. -->
 
 Each card is a real photo; the pixel-art figures are that photo's own
 subjects, redrawn by an image model and floating in front of the card at
