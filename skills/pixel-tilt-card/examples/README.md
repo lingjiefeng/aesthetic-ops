@@ -3,7 +3,7 @@
 `field-notes.html` is a four-card deck built by this skill — the repo
 owner's own photos, published deliberately as an illustration of the
 effect. Open it in any browser (or view the [live
-demo](https://lingjiefeng.github.io/aesthetic-ops/skills/depth-card/examples/field-notes.html)):
+demo](https://lingjiefeng.github.io/aesthetic-ops/skills/pixel-tilt-card/examples/field-notes.html)):
 hover to tilt, arrows or ←/→ to flip between cards.
 
 The PNGs are stills of individual cards, used in the top-level README.

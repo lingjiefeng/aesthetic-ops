@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate depth-card assets from a photo using Gemini.
+"""Generate pixel-tilt-card assets from a photo using Gemini.
 
 Produces, in --out:
     photo.jpg     resized base photo
@@ -13,7 +13,7 @@ Usage:
     uv run --with google-genai,pillow,numpy generate_assets.py photo.jpg \
         --subject "the woman in the cap" --subject "the cow" --out assets/
 
-Fails loudly (nonzero exit + DEPTH-CARD FAILURE message) when a sprite or the
+Fails loudly (nonzero exit + PIXEL-TILT-CARD FAILURE message) when a sprite or the
 foreground mask can't be produced cleanly. Never emits degraded assets.
 """
 
@@ -31,7 +31,7 @@ DEPTH_ONNX_URL = (
     "https://huggingface.co/onnx-community/depth-anything-v2-small/"
     "resolve/main/onnx/model.onnx"
 )
-DEPTH_ONNX_CACHE = Path.home() / ".cache" / "depth-card" / "depth-anything-v2-small.onnx"
+DEPTH_ONNX_CACHE = Path.home() / ".cache" / "pixel-tilt-card" / "depth-anything-v2-small.onnx"
 
 SPRITE_PROMPT = (
     "Look at this photo. Redraw ONLY {subject} as a chunky retro pixel-art "
@@ -50,7 +50,7 @@ BASE_MAX = 1600  # px, long edge of the base photo
 
 
 def fail(msg):
-    sys.exit(f"DEPTH-CARD FAILURE: {msg}")
+    sys.exit(f"PIXEL-TILT-CARD FAILURE: {msg}")
 
 
 def gen_image(client, contents):

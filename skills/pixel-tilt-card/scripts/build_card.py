@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Assemble a self-contained depth-card HTML page from generated assets.
+"""Assemble a self-contained pixel-tilt-card HTML page from generated assets.
 
 Single card:
     python3 build_card.py assets/ card.config.json -o card.html
@@ -37,7 +37,7 @@ GLOBAL_KEYS = ("tiltMax", "followLag", "spriteLag", "nearDepth",
 
 
 def fail(msg):
-    sys.exit(f"DEPTH-CARD FAILURE: {msg}")
+    sys.exit(f"PIXEL-TILT-CARD FAILURE: {msg}")
 
 
 def data_uri(path, mime):
@@ -56,7 +56,7 @@ def load_card(assets, cfg):
         card["nearSrc"] = data_uri(near, "image/png")
 
     if not cfg.get("sprites"):
-        fail(f"config for {assets} has no sprites — a depth card needs at least one")
+        fail(f"config for {assets} has no sprites — a pixel tilt card needs at least one")
     card["sprites"] = []
     for s in cfg["sprites"]:
         s = dict(s)
@@ -96,7 +96,7 @@ def main():
     html = html.replace(TOKEN, json.dumps(top))
     title = configs[0][1].get("title")
     if title:
-        html = html.replace("<title>depth card</title>", f"<title>{title}</title>")
+        html = html.replace("<title>pixel tilt card</title>", f"<title>{title}</title>")
 
     out = Path(args.output)
     out.write_text(html)

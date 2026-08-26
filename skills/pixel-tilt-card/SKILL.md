@@ -1,9 +1,9 @@
 ---
-name: depth-card
-description: Turn one or more photos into an interactive "depth card" — a self-contained HTML page where each photo tilts in 3D under the cursor while pixel-art sprites of the photo's own subjects float in front, overhanging the card's edges. Multiple photos become a deck with left/right arrows. Use when the user wants a depth card, a 3D tilting photo card, or pixel-art parallax page from photos.
+name: pixel-tilt-card
+description: Turn one or more photos into an interactive "pixel tilt card" — a self-contained HTML page where each photo tilts in 3D under the cursor while pixel-art sprites of the photo's own subjects float in front, overhanging the card's edges. Multiple photos become a deck with left/right arrows. Use when the user wants a pixel tilt card, a 3D tilting photo card, or pixel-art parallax page from photos.
 ---
 
-# Depth Card
+# Pixel Tilt Card
 
 Input: one or more photos, plus (optionally) which subjects to lift and
 taste knobs. Output: one self-contained `.html` file — no server, no build,
@@ -18,7 +18,7 @@ flip between cards with a swing transition.
   copy the key; pipe run output through `grep -viE 'AIza|api.key'`.
 - `uv` (deps fetched per-run: `google-genai,pillow,numpy,onnxruntime`).
 - First-ever run downloads a ~50MB local depth model to
-  `~/.cache/depth-card/` (one time, then offline).
+  `~/.cache/pixel-tilt-card/` (one time, then offline).
 
 ## Workflow
 
