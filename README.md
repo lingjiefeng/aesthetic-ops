@@ -33,6 +33,31 @@ their own depths:
 |---|---|---|
 | ![golden hour, with cow](skills/pixel-tilt-card/examples/card-golden-hour.png) | ![sunflower field](skills/pixel-tilt-card/examples/card-sunflower.png) | ![lakeside daydream](skills/pixel-tilt-card/examples/card-daydream.png) |
 
+### Using it
+
+Install once — clone this repo and link the skill into Claude Code:
+
+```bash
+git clone https://github.com/lingjiefeng/aesthetic-ops.git
+ln -s "$PWD/aesthetic-ops/skills/pixel-tilt-card" ~/.claude/skills/pixel-tilt-card
+export GEMINI_API_KEY=...   # free key: https://aistudio.google.com/apikey
+```
+
+Then just ask Claude Code, naming the photos and (optionally) what to lift
+out of each:
+
+```
+/pixel-tilt-card ~/photos/beach.jpg (the dog and the surfer), ~/photos/city.jpg (the red car)
+```
+
+Say nothing about subjects and it picks 1–3 itself. You get a single
+`.html` file — open it, hover it, send it to someone. Requires `uv`; the
+first run also downloads a ~50MB depth model, then works offline.
+
+Tweaking afterwards needs no re-processing: sprite positions, sizes, tilt
+weight and glare all live in a `CONFIG` block at the top of the generated
+file. Edit, reload. Full details in the
+[skill README](skills/pixel-tilt-card/).
 
 ## Structure
 
