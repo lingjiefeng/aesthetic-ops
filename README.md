@@ -33,8 +33,6 @@ their own depths:
 |---|---|---|
 | ![golden hour, with cow](skills/pixel-tilt-card/examples/card-golden-hour.png) | ![sunflower field](skills/pixel-tilt-card/examples/card-sunflower.png) | ![lakeside daydream](skills/pixel-tilt-card/examples/card-daydream.png) |
 
-The whole deck is [one 2MB HTML file](skills/pixel-tilt-card/examples/field-notes.html)
-— no build, no server, works from a double-click.
 
 ## Structure
 
