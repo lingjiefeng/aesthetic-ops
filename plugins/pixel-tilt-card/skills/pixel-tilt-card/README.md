@@ -4,13 +4,28 @@ Turn photos into an interactive card page: the photo tilts in 3D under your
 cursor while pixel-art sprites of its own subjects float in front and hang
 past the card's edges. Several photos become a deck with arrow navigation.
 
-**[▶ Live demo](https://lingjiefeng.github.io/aesthetic-ops/skills/pixel-tilt-card/examples/field-notes.html)**
+**[▶ Live demo](https://lingjiefeng.github.io/aesthetic-ops/examples/pixel-tilt-card/field-notes.html)**
 
 ## Install
 
+Marketplace (recommended) — from inside Claude Code:
+
+```
+/plugin marketplace add lingjiefeng/aesthetic-ops
+/plugin install pixel-tilt-card@aesthetic-ops
+```
+
+Or copy it in manually:
+
 ```bash
-ln -s "$PWD/skills/pixel-tilt-card" ~/.claude/skills/pixel-tilt-card
-export GEMINI_API_KEY=...   # free key: https://aistudio.google.com/apikey
+git clone https://github.com/lingjiefeng/aesthetic-ops.git
+cp -R aesthetic-ops/plugins/pixel-tilt-card/skills/pixel-tilt-card ~/.claude/skills/
+```
+
+Then set a free Gemini key, used to draw the sprites:
+
+```bash
+export GEMINI_API_KEY=...   # https://aistudio.google.com/apikey
 ```
 
 Needs [`uv`](https://docs.astral.sh/uv/). The first run downloads a ~50MB
@@ -61,5 +76,4 @@ cleanly, the run stops and says why rather than shipping a degraded card.
 SKILL.md            instructions Claude follows
 scripts/            generate_assets.py (sprites + depth), build_card.py
 template/card.html  the interactive page
-examples/           demo deck + stills (illustration only)
 ```

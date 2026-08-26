@@ -14,11 +14,11 @@ Like DevOps, but for aesthetics: reusable, battle-tested recipes that turn "make
 
 | Skill | What it makes |
 |---|---|
-| [`pixel-tilt-card`](skills/pixel-tilt-card/) | Photos → an interactive 3D-tilting card page: pixel-art sprites of the photo's own subjects float in front and overhang the edges; multiple photos become an arrow-navigable deck. Single self-contained HTML file. |
+| [`pixel-tilt-card`](plugins/pixel-tilt-card/skills/pixel-tilt-card/) | Photos → an interactive 3D-tilting card page: pixel-art sprites of the photo's own subjects float in front and overhang the edges; multiple photos become an arrow-navigable deck. Single self-contained HTML file. |
 
 ## Showcase: pixel-tilt-card
 
-**[▶ Open the live demo](https://lingjiefeng.github.io/aesthetic-ops/skills/pixel-tilt-card/examples/field-notes.html)** — hover to tilt, use the arrows (or ←/→) to flip cards.
+**[▶ Open the live demo](https://lingjiefeng.github.io/aesthetic-ops/examples/pixel-tilt-card/field-notes.html)** — hover to tilt, use the arrows (or ←/→) to flip cards.
 
 <!-- To add a demo video: open this README on github.com, click the pencil
      (edit), and drag your screen recording (.mp4/.mov, under 100MB) into the
@@ -31,47 +31,71 @@ their own depths:
 
 | | | |
 |---|---|---|
-| ![golden hour, with cow](skills/pixel-tilt-card/examples/card-golden-hour.png) | ![sunflower field](skills/pixel-tilt-card/examples/card-sunflower.png) | ![lakeside daydream](skills/pixel-tilt-card/examples/card-daydream.png) |
+| ![golden hour, with cow](examples/pixel-tilt-card/card-golden-hour.png) | ![sunflower field](examples/pixel-tilt-card/card-sunflower.png) | ![lakeside daydream](examples/pixel-tilt-card/card-daydream.png) |
 
-### Using it
+### Install
 
-Install once — clone this repo and link the skill into Claude Code:
+**Claude Code marketplace** (recommended):
+
+```
+/plugin marketplace add lingjiefeng/aesthetic-ops
+/plugin install pixel-tilt-card@aesthetic-ops
+```
+
+Invoke with `/pixel-tilt-card:pixel-tilt-card`.
+
+**Manual** — copy the skill into your skills directory:
 
 ```bash
 git clone https://github.com/lingjiefeng/aesthetic-ops.git
-ln -s "$PWD/aesthetic-ops/skills/pixel-tilt-card" ~/.claude/skills/pixel-tilt-card
-export GEMINI_API_KEY=...   # free key: https://aistudio.google.com/apikey
+cp -R aesthetic-ops/plugins/pixel-tilt-card/skills/pixel-tilt-card ~/.claude/skills/
 ```
 
-Then just ask Claude Code, naming the photos and (optionally) what to lift
-out of each:
+Invoke with `/pixel-tilt-card`.
+
+**Other coding agents** — hand them the repo link and let them follow
+[`SKILL.md`](plugins/pixel-tilt-card/skills/pixel-tilt-card/SKILL.md):
+
+```
+https://github.com/lingjiefeng/aesthetic-ops
+```
+
+### Using it
+
+Set a (free) Gemini key once — it draws the pixel sprites:
+
+```bash
+export GEMINI_API_KEY=...   # https://aistudio.google.com/apikey
+```
+
+Then name your photos and, optionally, what to lift out of each:
 
 ```
 /pixel-tilt-card ~/photos/beach.jpg (the dog and the surfer), ~/photos/city.jpg (the red car)
 ```
 
 Say nothing about subjects and it picks 1–3 itself. You get a single
-`.html` file — open it, hover it, send it to someone. Requires `uv`; the
-first run also downloads a ~50MB depth model, then works offline.
+self-contained `.html` file — open it, hover it, send it to someone.
+Requires [`uv`](https://docs.astral.sh/uv/); the first run also downloads a
+~50MB depth model, then works offline.
 
 Tweaking afterwards needs no re-processing: sprite positions, sizes, tilt
 weight and glare all live in a `CONFIG` block at the top of the generated
 file. Edit, reload. Full details in the
-[skill README](skills/pixel-tilt-card/).
+[skill README](plugins/pixel-tilt-card/skills/pixel-tilt-card/).
 
 ## Structure
 
 ```
-skills/     # one directory per skill (SKILL.md + supporting assets)
-prompts/    # standalone prompt files, organized by medium
-  video/
-  image/
-  slides/
+.claude-plugin/     marketplace catalog (this repo is an installable marketplace)
+plugins/            one directory per plugin; each holds skills/<name>/
+examples/           demo output per skill — illustration, not shipped in installs
+prompts/            standalone prompts, organized by medium
 ```
 
 ## Adding a skill
 
-Each skill gets its own directory under `skills/` with a `SKILL.md` describing:
+Each skill lives at `plugins/<plugin>/skills/<skill>/` with a `SKILL.md` describing:
 
 1. **What it produces** — the visual outcome, ideally with an example
 2. **When to use it** — the kind of content it fits

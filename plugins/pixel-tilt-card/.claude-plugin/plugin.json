@@ -1,0 +1,21 @@
+{
+  "name": "pixel-tilt-card",
+  "version": "1.0.0",
+  "description": "Turn photos into an interactive card page: the photo tilts in 3D under the cursor while pixel-art sprites of its own subjects float in front and hang past the card's edges. Several photos become a deck with arrow navigation. Output is one self-contained HTML file.",
+  "skills": "./skills/",
+  "author": {
+    "name": "lingjiefeng",
+    "url": "https://github.com/lingjiefeng"
+  },
+  "homepage": "https://github.com/lingjiefeng/aesthetic-ops",
+  "repository": "https://github.com/lingjiefeng/aesthetic-ops",
+  "keywords": [
+    "photos",
+    "pixel-art",
+    "parallax",
+    "3d",
+    "tilt",
+    "html",
+    "interactive"
+  ]
+}
