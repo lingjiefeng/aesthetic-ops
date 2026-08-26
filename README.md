@@ -20,18 +20,11 @@ Like DevOps, but for aesthetics: reusable, battle-tested recipes that turn "make
 
 **[▶ Open the live demo](https://lingjiefeng.github.io/aesthetic-ops/examples/pixel-tilt-card/field-notes.html)** — hover to tilt, use the arrows (or ←/→) to flip cards.
 
-<!-- To add a demo video: open this README on github.com, click the pencil
-     (edit), and drag your screen recording (.mp4/.mov, under 100MB) into the
-     editor right here. GitHub uploads it and inserts an embedded player;
-     commit and the video plays inline. -->
+[![pixel tilt card demo](examples/pixel-tilt-card/demo.gif)](https://lingjiefeng.github.io/aesthetic-ops/examples/pixel-tilt-card/field-notes.html)
 
 Each card is a real photo; the pixel-art figures are that photo's own
 subjects, redrawn by an image model and floating in front of the card at
-their own depths:
-
-| | | |
-|---|---|---|
-| ![golden hour, with cow](examples/pixel-tilt-card/card-golden-hour.png) | ![sunflower field](examples/pixel-tilt-card/card-sunflower.png) | ![lakeside daydream](examples/pixel-tilt-card/card-daydream.png) |
+their own depths. ([full-quality video](examples/pixel-tilt-card/demo.mp4))
 
 ### Install
 
